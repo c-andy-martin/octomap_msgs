@@ -55,6 +55,7 @@ namespace octomap_msgs{
   static inline octomap::AbstractOcTree* fullMsgToMap(const octomap_msgs::msg::Octomap& msg){
     octomap::AbstractOcTree* tree = octomap::AbstractOcTree::createTree(msg.id, msg.resolution);    
     if (tree){
+      tree->setTreeDepth(msg.depth);
       std::stringstream datastream;
       if (msg.data.size() > 0){
 	datastream.write((const char*) &msg.data[0], msg.data.size());
@@ -69,6 +70,7 @@ namespace octomap_msgs{
   template<class TreeType>
   void readTree(TreeType* octree, const octomap_msgs::msg::Octomap& msg){
     std::stringstream datastream;
+    octree->setTreeDepth(msg.depth);
     if (msg.data.size() > 0){
       datastream.write((const char*) &msg.data[0], msg.data.size());
       octree->readBinaryData(datastream);
@@ -165,6 +167,7 @@ namespace octomap_msgs{
   template <class OctomapT>
   static inline bool binaryMapToMsg(const OctomapT& octomap, octomap_msgs::msg::Octomap& msg){
     msg.resolution = octomap.getResolution();
+    msg.depth = octomap.getTreeDepth();
     msg.id = octomap.getTreeType();
     msg.binary = true;
     
@@ -187,6 +190,7 @@ namespace octomap_msgs{
   template <class OctomapT>
   static inline bool fullMapToMsg(const OctomapT& octomap, octomap_msgs::msg::Octomap& msg){
     msg.resolution = octomap.getResolution();
+    msg.depth = octomap.getTreeDepth();
     msg.id = octomap.getTreeType();
     msg.binary = false;
     
